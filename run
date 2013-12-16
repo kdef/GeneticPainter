@@ -1,0 +1,4 @@
+#!/bin/bash
+mkdir -p bin
+javac -d "bin" src/gpainter/*.java
+java -cp "bin" gpainter.Main
