@@ -3,8 +3,8 @@ package gpainter;
 import java.awt.*;
 import javax.swing.*;
 
-public class Main extends JFrame
-{
+public class Main extends JFrame {
+
     // instance variables
     private static final int DEFAULT_HEIGHT = 600;
     private static final int DEFAULT_WIDTH = 800;
@@ -16,10 +16,10 @@ public class Main extends JFrame
         
         Container topPane = getContentPane();
         // display images
-        JPanel paintView = new JPanel();
+        ImagePanel paintView = new ImagePanel();
         paintView.setBackground(Color.BLUE);
-        JPanel originalView = new JPanel();
-        originalView.setBackground(Color.RED);
+        ImagePanel originalView = new ImagePanel("/home/kyle/src/java/GeneticPainter/images/test.png");
+        //originalView.setBackground(Color.RED);
         // display controls
         JPanel controlView = new JPanel();
         controlView.setBackground(Color.YELLOW);
@@ -51,7 +51,8 @@ public class Main extends JFrame
         Main window = new Main();
         window.initGPainter();        
 
-        Gene individual = new Gene();
+        Individual indv = new Individual();
+
     }
     
 }
