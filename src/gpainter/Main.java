@@ -22,7 +22,7 @@ public class Main extends JFrame {
         Container topPane = getContentPane();
         
         paintView = new ImagePanel();
-        paintView.setBackground(Color.BLUE);
+        //paintView.setBackground(Color.BLUE);
         paintView.setMinimumSize(panelSize);
         paintView.setPreferredSize(panelSize);
 
@@ -56,16 +56,16 @@ public class Main extends JFrame {
     }
     
     public void initGPainter() {
-
+        Individual indv = new Individual();
+        Graphics2D g = paintView.img.createGraphics();
+        indv.paint(g);
+        g.dispose();
     }
     
     public static void main(String[] args)
     {        
         Main window = new Main();
         window.initGPainter();        
-
-        Individual indv = new Individual();
-
     }
     
 }

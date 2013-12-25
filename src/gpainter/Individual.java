@@ -2,6 +2,7 @@ package gpainter;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 /**
  * An Individual is an array of circles that represent a single painted image.
@@ -21,8 +22,9 @@ public class Individual {
         genes = new Circle[GENE_LENGTH];
 
         // initialize genes as random circles 
+        Random rand = new Random(System.currentTimeMillis());
         for(int i = 0; i < GENE_LENGTH; i++) {
-            genes[i] = new Circle();
+            genes[i] = new Circle(rand);
         }
 
     }
@@ -46,7 +48,9 @@ public class Individual {
      * @param g     the Graphics object to paint with
      */
     public void paint(Graphics g) {
+        System.out.println("Size: " + genes.length);
         for(Circle gene : genes) {
+            System.out.println("Drawing: " + gene.size + " at (" + gene.x + "," + gene.y + ")");
             gene.paint(g);
         }
     }

@@ -29,8 +29,7 @@ public class Circle {
     /**
      * Create a new Circle randomly.
      */
-    public Circle() {
-        Random rand = new Random(System.currentTimeMillis());
+    public Circle(Random rand) {
         
         size = rand.nextInt(100);       //100 is an arbitrary size limit
         x = rand.nextInt(ImagePanel.WIDTH);
