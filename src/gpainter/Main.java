@@ -5,23 +5,33 @@ import javax.swing.*;
 
 public class Main extends JFrame {
 
-    // instance variables
-    private static final int DEFAULT_HEIGHT = 600;
-    private static final int DEFAULT_WIDTH = 800;
+    //instance variables
+    private ImagePanel paintView;
+    private ImagePanel targetView;
+    private JPanel controlView;
 
-    
+    /**
+      * Instantiate the frame to display the images and other information.
+      */
     public Main() {
-        
-        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        
+        // calculate sizes
+        Dimension minSize = new Dimension(ImagePanel.WIDTH * 2, ImagePanel.HEIGHT + 50);
+        Dimension panelSize = new Dimension(ImagePanel.WIDTH, ImagePanel.HEIGHT);
+
+        // setup images
         Container topPane = getContentPane();
-        // display images
-        ImagePanel paintView = new ImagePanel();
+        
+        paintView = new ImagePanel();
         paintView.setBackground(Color.BLUE);
-        ImagePanel originalView = new ImagePanel("/home/kyle/src/java/GeneticPainter/images/test.png");
-        //originalView.setBackground(Color.RED);
-        // display controls
-        JPanel controlView = new JPanel();
+        paintView.setMinimumSize(panelSize);
+        paintView.setPreferredSize(panelSize);
+
+        targetView = new ImagePanel("images/test.png");
+        targetView.setMinimumSize(panelSize);
+        targetView.setPreferredSize(panelSize);
+
+        // setup controls
+        controlView = new JPanel();
         controlView.setBackground(Color.YELLOW);
         
         JButton start = new JButton("Start");
@@ -30,20 +40,23 @@ public class Main extends JFrame {
         // display images side by side 
         Box imagePane = new Box(BoxLayout.LINE_AXIS);
         imagePane.add(paintView);
-        imagePane.add(originalView);
+        imagePane.add(targetView);
 
-        Box contentPane = new Box(BoxLayout.PAGE_AXIS);
-        contentPane.add(imagePane);
-        contentPane.add(controlView);
+        Box content = new Box(BoxLayout.PAGE_AXIS);
+        content.add(imagePane);
+        content.add(controlView);
 
-        topPane.add(contentPane);
+        topPane.add(content);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Genetic Painter");
+        setMinimumSize(minSize);
+        pack();
+        setVisible(true);
     }
     
     public void initGPainter() {
-        this.setTitle("Genetic Painter");
-        this.setVisible(true);
+
     }
     
     public static void main(String[] args)

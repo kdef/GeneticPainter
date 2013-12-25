@@ -2,6 +2,8 @@ package gpainter;
 
 import javax.swing.JPanel;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -26,18 +28,23 @@ public class ImagePanel extends JPanel {
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
     }
 
+    /**
+      * Create a new JPanel with a BufferedImage loaaded from a file.
+      */
     public ImagePanel(String path) {
         BufferedImage in = null;
         try {
             in = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Error loading file: " + e.getMessage());
+            System.exit(1);
         }
 
-
+        // scale the image to our default size
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        Graphics g = img.createGraphics();
-        g.drawImage(in, 0, 0, null);
+        Graphics2D g = img.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(in, 0, 0, WIDTH, HEIGHT, null);
         g.dispose();
     }
 
