@@ -2,6 +2,7 @@ package gpainter;
 
 import java.awt.*;
 import javax.swing.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends JFrame {
 
@@ -55,10 +56,35 @@ public class Main extends JFrame {
         setVisible(true);
     }
     
-    public void initGPainter() {
-        Individual indv = new Individual();
+    private void initGPainter() {
         Graphics2D g = paintView.img.createGraphics();
-        indv.paint(g);
+        Population pop = new Population();
+
+        Individual best = pop.generation[0];
+        while (best.fitness < 99) {
+            best = pop.generation[0];
+
+            for (Individual candidate : pop.generation) {
+                candidate.paint(g);
+                repaint();
+                if (candidate.judgeFitness() > best.fitness) {
+                    best = candidate;
+                }
+            }
+
+            // show the best from the generation for a second
+            best.paint(g);
+            repaint();
+
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch(InterruptedException ie) {
+                System.exit(1);
+            }
+
+            // evolve!
+            pop.evolve();
+        }
         g.dispose();
     }
     

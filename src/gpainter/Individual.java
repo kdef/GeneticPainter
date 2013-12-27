@@ -11,18 +11,17 @@ import java.util.Random;
  *
  * @author Kyle DeFrancia
  */
-public class Individual {
+public class Individual implements Comparable<Individual> {
 
-    private static final int GENE_LENGTH = 100;
+    public static final int GENE_LENGTH = 100;
     public Circle[] genes;
     public int fitness;
 
-    public Individual() {
+    public Individual(Random rand) {
         fitness = 0;
         genes = new Circle[GENE_LENGTH];
 
         // initialize genes as random circles 
-        Random rand = new Random(System.currentTimeMillis());
         for(int i = 0; i < GENE_LENGTH; i++) {
             genes[i] = new Circle(rand);
         }
@@ -40,6 +39,11 @@ public class Individual {
      */
     public int judgeFitness() {
         return 0;
+    }
+
+    @Override
+    public int compareTo(Individual other) {
+        return this.fitness - other.fitness;
     }
 
     /**
