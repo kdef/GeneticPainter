@@ -45,20 +45,16 @@ public class Population {
      * @return an Array of Individuals 
      */
     private Individual[] mate(Individual mom, Individual dad) {
-        Individual child1 = new Individual(rand);
-        Individual child2 = new Individual(rand);
+        Individual[] kids = new Individual[] {new Individual(rand), new Individual(rand)};
 
-        int splitPoint = Individual.GENE_LENGTH / 2;
         // copy half the genes from mom and half from dad
-        System.arraycopy(mom.genes, 0, child1.genes, 0, splitPoint);
-        System.arraycopy(dad.genes, splitPoint, child1.genes, splitPoint, splitPoint);
+        int splitPoint = Individual.GENE_LENGTH / 2;
 
-        System.arraycopy(dad.genes, 0, child2.genes, 0, splitPoint);
-        System.arraycopy(mom.genes, splitPoint, child2.genes, splitPoint, splitPoint);
+        System.arraycopy(mom.genes, 0, kids[0].genes, 0, splitPoint);
+        System.arraycopy(dad.genes, splitPoint, kids[0].genes, splitPoint, splitPoint);
 
-        Individual[] children = new Individual[2];
-        children[0] = child1;
-        children[1] = child2;
+        System.arraycopy(dad.genes, 0, kids[1].genes, 0, splitPoint);
+        System.arraycopy(mom.genes, splitPoint, kids[1].genes, splitPoint, splitPoint);
 
         // randomly mutate some genes
         double chanceToMutate = 0.1;
@@ -67,11 +63,11 @@ public class Population {
             // randomly choose either size, color, or position to change
             switch (rand.nextInt(3)) {
                 case 0: System.out.println("    size changed");
-                     for (int i = 0; i < children.length; i++) {
+                     for (int i = 0; i < kids.length; i++) {
                             int randomGene = rand.nextInt(Individual.GENE_LENGTH);
                             int randomSize = rand.nextInt(100);
-                            children[i].genes[randomGene].size = randomSize; 
-                            System.out.println("    " + i + ": " + children[i].genes[randomGene].size + " = " + randomSize);
+                            kids[i].genes[randomGene].size = randomSize; 
+                            System.out.println("    " + i + ": " + kids[i].genes[randomGene].size + " = " + randomSize);
                         }
                         break;
                 case 1:
@@ -79,7 +75,7 @@ public class Population {
                 default: break;
             }
         }
-        return children;
+        return kids;
     }
 
     /**
@@ -95,10 +91,11 @@ public class Population {
         for (int i = keep; i < (POP_SIZE-1); i+=2) {
             // mate two random parents and add children
             int mom = rand.nextInt(keep);
-            int dad = -1;
-            while (dad != mom) {
+            int dad;
+            do {
                 dad = rand.nextInt(keep);
-            }
+            } while (dad == mom);
+
             Individual[] children = mate(generation[mom], generation[dad]);
             generation[i] = children[0];
             generation[i+1] = children[1];

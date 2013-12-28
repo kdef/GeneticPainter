@@ -60,13 +60,13 @@ public class Main extends JFrame {
         Graphics2D g = paintView.img.createGraphics();
         Population pop = new Population();
 
-        Individual best = pop.generation[0];
-        while (best.fitness < 99) {
+        Individual best;
+        do {
             best = pop.generation[0];
 
             for (Individual candidate : pop.generation) {
-                candidate.paint(g);
-                repaint();
+                //candidate.paint(g);
+                //repaint();
                 if (candidate.judgeFitness() > best.fitness) {
                     best = candidate;
                 }
@@ -84,7 +84,8 @@ public class Main extends JFrame {
 
             // evolve!
             pop.evolve();
-        }
+        } while (best.fitness < 99);
+
         g.dispose();
     }
     
