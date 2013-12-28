@@ -27,7 +27,7 @@ public class Main extends JFrame {
         paintView.setMinimumSize(panelSize);
         paintView.setPreferredSize(panelSize);
 
-        targetView = new ImagePanel("images/test.png");
+        targetView = new ImagePanel("images/star.png");
         targetView.setMinimumSize(panelSize);
         targetView.setPreferredSize(panelSize);
 
@@ -57,36 +57,39 @@ public class Main extends JFrame {
     }
     
     private void initGPainter() {
-        Graphics2D g = paintView.img.createGraphics();
         Population pop = new Population();
 
         Individual best;
+        int gen = 0;
         do {
             best = pop.generation[0];
 
+            // calculate the fitness of each Individual
+            //System.out.println("GENERATION " + gen);
             for (Individual candidate : pop.generation) {
-                //candidate.paint(g);
+                //paintView.img = candidate.img;
                 //repaint();
-                if (candidate.judgeFitness() > best.fitness) {
+                if (candidate.judgeFitness(targetView.img) < best.fitness) {
                     best = candidate;
                 }
             }
+            System.out.println("- GEN " + gen +": " + best.fitness);
 
             // show the best from the generation for a second
-            best.paint(g);
+            paintView.img = best.img;
             repaint();
 
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch(InterruptedException ie) {
-                System.exit(1);
-            }
+            //try {
+            //    TimeUnit.SECONDS.sleep(1);
+            //} catch(InterruptedException ie) {
+            //    System.exit(1);
+            //}
 
             // evolve!
             pop.evolve();
-        } while (best.fitness < 99);
 
-        g.dispose();
+            gen++;
+        } while (best.fitness > 1000);
     }
     
     public static void main(String[] args)

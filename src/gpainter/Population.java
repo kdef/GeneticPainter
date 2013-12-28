@@ -1,5 +1,6 @@
 package gpainter;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -57,21 +58,29 @@ public class Population {
         System.arraycopy(mom.genes, splitPoint, kids[1].genes, splitPoint, splitPoint);
 
         // randomly mutate some genes
-        double chanceToMutate = 0.1;
+        double chanceToMutate = 0.3;
         if (chanceToMutate > rand.nextDouble()) {
-            System.out.println("Mutation: ");
+            //System.out.println("Mutation: ");
+            Individual childToMutate = kids[rand.nextInt(kids.length)];
+            int randomGene = rand.nextInt(Individual.GENE_LENGTH);
             // randomly choose either size, color, or position to change
             switch (rand.nextInt(3)) {
-                case 0: System.out.println("    size changed");
-                     for (int i = 0; i < kids.length; i++) {
-                            int randomGene = rand.nextInt(Individual.GENE_LENGTH);
-                            int randomSize = rand.nextInt(100);
-                            kids[i].genes[randomGene].size = randomSize; 
-                            System.out.println("    " + i + ": " + kids[i].genes[randomGene].size + " = " + randomSize);
-                        }
+                case 0: int randomSize = rand.nextInt(100);
+                        childToMutate.genes[randomGene].size = randomSize; 
+                        //System.out.println("    size changed");
                         break;
-                case 1:
-                case 2:
+                case 1: float r = rand.nextFloat();
+                        float g = rand.nextFloat();
+                        float b = rand.nextFloat();
+                        Color c = new Color(r, g, b);
+                        childToMutate.genes[randomGene].color = c;
+                        //System.out.println("    color changed");
+                        break;
+                case 2: int randomX = rand.nextInt(ImagePanel.WIDTH);
+                        int randomY = rand.nextInt(ImagePanel.HEIGHT);
+                        childToMutate.genes[randomGene].x = randomX;
+                        childToMutate.genes[randomGene].y = randomY;
+                        //System.out.println("    position changed");
                 default: break;
             }
         }
@@ -87,6 +96,11 @@ public class Population {
         Arrays.sort(generation);
         int keep = (int)(POP_SIZE * RETAIN);
 
+        //for (int k =0; k < POP_SIZE; k++){
+        //    System.out.println("fitness: " + generation[k].fitness);
+        //    if (k == keep) System.out.println("^ parents | kids v");
+        //}
+
         // fill in the rest of the Population
         for (int i = keep; i < (POP_SIZE-1); i+=2) {
             // mate two random parents and add children
@@ -99,6 +113,7 @@ public class Population {
             Individual[] children = mate(generation[mom], generation[dad]);
             generation[i] = children[0];
             generation[i+1] = children[1];
+            //System.out.println("making babies at indxes: " + i + " and " + (i+1));
         }
     }
 

@@ -1,6 +1,8 @@
 package gpainter;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -14,17 +16,28 @@ import java.util.Random;
 public class Individual implements Comparable<Individual> {
 
     public static final int GENE_LENGTH = 100;
+    public BufferedImage img;
     public Circle[] genes;
     public int fitness;
 
     public Individual(Random rand) {
         fitness = 0;
-        genes = new Circle[GENE_LENGTH];
-
+        img = new BufferedImage(ImagePanel.WIDTH,
+                                ImagePanel.HEIGHT,
+                                BufferedImage.TYPE_INT_ARGB);
         // initialize genes as random circles 
+        genes = new Circle[GENE_LENGTH];
         for(int i = 0; i < GENE_LENGTH; i++) {
             genes[i] = new Circle(rand);
         }
+
+        // draw the circles onto the image
+        img = new BufferedImage(ImagePanel.WIDTH,
+                                ImagePanel.HEIGHT,
+                                BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        this.paint(g);
+        g.dispose();
 
     }
 
@@ -37,8 +50,30 @@ public class Individual implements Comparable<Individual> {
      *
      * @return an int representing the fitness of this Individual
      */
-    public int judgeFitness() {
-        return 0;
+    public int judgeFitness(BufferedImage target) {
+        int fitness = 0;
+
+        // compare images pixel by pixel
+        for (int i = 0; i < ImagePanel.WIDTH; i++) {
+            for (int j = 0; j < ImagePanel.HEIGHT; j++) {
+                Color indv = new Color(img.getRGB(i, j));
+                Color targ = new Color(target.getRGB(i, j));
+
+                int deltaR = targ.getRed() - indv.getRed();
+                int deltaG = targ.getGreen() - indv.getGreen();
+                int deltaB = targ.getBlue() - indv.getBlue();
+
+                int pixelFitness = (int)Math.sqrt(deltaR * deltaR +
+                                                  deltaG * deltaG +
+                                                  deltaB * deltaB);
+                // lower fitness is better
+                fitness += pixelFitness;
+            }
+        }
+
+        //System.out.println("    fit = " + fitness);
+        this.fitness = fitness;
+        return fitness;
     }
 
     @Override
@@ -52,9 +87,9 @@ public class Individual implements Comparable<Individual> {
      * @param g     the Graphics object to paint with
      */
     public void paint(Graphics g) {
-        System.out.println("Size: " + genes.length);
+        //System.out.println("Size: " + genes.length);
         for(Circle gene : genes) {
-            System.out.println("Drawing: " + gene.size + " at (" + gene.x + "," + gene.y + ")");
+            //System.out.println("Drawing: " + gene.size + " at (" + gene.x + "," + gene.y + ")");
             gene.paint(g);
         }
     }
