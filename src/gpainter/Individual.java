@@ -15,16 +15,14 @@ import java.util.Random;
  */
 public class Individual implements Comparable<Individual> {
 
-    public static final int GENE_LENGTH = 100;
+    public static final int GENE_LENGTH = 150;
     public BufferedImage img;
     public Circle[] genes;
     public int fitness;
 
     public Individual(Random rand) {
         fitness = 0;
-        img = new BufferedImage(ImagePanel.WIDTH,
-                                ImagePanel.HEIGHT,
-                                BufferedImage.TYPE_INT_ARGB);
+
         // initialize genes as random circles 
         genes = new Circle[GENE_LENGTH];
         for(int i = 0; i < GENE_LENGTH; i++) {
@@ -34,7 +32,7 @@ public class Individual implements Comparable<Individual> {
         // draw the circles onto the image
         img = new BufferedImage(ImagePanel.WIDTH,
                                 ImagePanel.HEIGHT,
-                                BufferedImage.TYPE_INT_ARGB);
+                                BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         this.paint(g);
         g.dispose();

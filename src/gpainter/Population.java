@@ -17,7 +17,7 @@ public class Population {
 
     public static final int POP_SIZE = 100;
     // percent of Population to retain between generations
-    public static final double RETAIN = 0.2;
+    public static final double RETAIN = 0.1;
 
     public Individual[] generation;
     public Random rand;
@@ -65,7 +65,7 @@ public class Population {
             int randomGene = rand.nextInt(Individual.GENE_LENGTH);
             // randomly choose either size, color, or position to change
             switch (rand.nextInt(3)) {
-                case 0: int randomSize = rand.nextInt(100);
+                case 0: int randomSize = rand.nextInt(30);
                         childToMutate.genes[randomGene].size = randomSize; 
                         //System.out.println("    size changed");
                         break;
@@ -95,14 +95,18 @@ public class Population {
         // select the fittest individuals as the parents
         Arrays.sort(generation);
         int keep = (int)(POP_SIZE * RETAIN);
+        //keep /= 2;
 
         //for (int k =0; k < POP_SIZE; k++){
         //    System.out.println("fitness: " + generation[k].fitness);
         //    if (k == keep) System.out.println("^ parents | kids v");
         //}
 
+        //generation[keep-1] = new Individual(rand);
+        generation[keep] = new Individual(rand); 
+
         // fill in the rest of the Population
-        for (int i = keep; i < (POP_SIZE-1); i+=2) {
+        for (int i = keep+1; i < (POP_SIZE-1); i+=2) {
             // mate two random parents and add children
             int mom = rand.nextInt(keep);
             int dad;

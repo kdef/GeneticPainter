@@ -16,8 +16,8 @@ import java.io.IOException;
  */
 public class ImagePanel extends JPanel {
 
-    public static final int WIDTH = 400;;
-    public static final int HEIGHT = 400;
+    public static final int WIDTH = 100;
+    public static final int HEIGHT = 100;
 
     public BufferedImage img;
 
@@ -25,7 +25,7 @@ public class ImagePanel extends JPanel {
       * Create a new JPanel with a BufferedImage to draw on.
       */
     public ImagePanel() {
-        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
     }
 
     /**
@@ -41,7 +41,7 @@ public class ImagePanel extends JPanel {
         }
 
         // scale the image to our default size
-        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.drawImage(in, 0, 0, WIDTH, HEIGHT, null);

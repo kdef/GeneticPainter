@@ -8,6 +8,7 @@ public class Main extends JFrame {
 
     //instance variables
     private ImagePanel paintView;
+    private ImagePanel bestView;
     private ImagePanel targetView;
     private JPanel controlView;
 
@@ -16,7 +17,7 @@ public class Main extends JFrame {
       */
     public Main() {
         // calculate sizes
-        Dimension minSize = new Dimension(ImagePanel.WIDTH * 2, ImagePanel.HEIGHT + 50);
+        Dimension minSize = new Dimension(ImagePanel.WIDTH * 3, ImagePanel.HEIGHT);
         Dimension panelSize = new Dimension(ImagePanel.WIDTH, ImagePanel.HEIGHT);
 
         // setup images
@@ -27,27 +28,32 @@ public class Main extends JFrame {
         paintView.setMinimumSize(panelSize);
         paintView.setPreferredSize(panelSize);
 
+        bestView = new ImagePanel();
+        bestView.setMinimumSize(panelSize);
+        bestView.setPreferredSize(panelSize);
+
         targetView = new ImagePanel("images/star.png");
         targetView.setMinimumSize(panelSize);
         targetView.setPreferredSize(panelSize);
 
         // setup controls
-        controlView = new JPanel();
-        controlView.setBackground(Color.YELLOW);
+        //controlView = new JPanel();
+        //controlView.setBackground(Color.YELLOW);
         
-        JButton start = new JButton("Start");
-        controlView.add(start);
+        //JButton start = new JButton("Start");
+        //controlView.add(start);
       
         // display images side by side 
         Box imagePane = new Box(BoxLayout.LINE_AXIS);
         imagePane.add(paintView);
+        imagePane.add(bestView);
         imagePane.add(targetView);
 
-        Box content = new Box(BoxLayout.PAGE_AXIS);
-        content.add(imagePane);
-        content.add(controlView);
+        //Box content = new Box(BoxLayout.PAGE_AXIS);
+        //content.add(imagePane);
+        //content.add(controlView);
 
-        topPane.add(content);
+        topPane.add(imagePane);
         
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Genetic Painter");
@@ -67,8 +73,8 @@ public class Main extends JFrame {
             // calculate the fitness of each Individual
             //System.out.println("GENERATION " + gen);
             for (Individual candidate : pop.generation) {
-                //paintView.img = candidate.img;
-                //repaint();
+                paintView.img = candidate.img;
+                repaint();
                 if (candidate.judgeFitness(targetView.img) < best.fitness) {
                     best = candidate;
                 }
@@ -76,7 +82,7 @@ public class Main extends JFrame {
             System.out.println("- GEN " + gen +": " + best.fitness);
 
             // show the best from the generation for a second
-            paintView.img = best.img;
+            bestView.img = best.img;
             repaint();
 
             //try {
