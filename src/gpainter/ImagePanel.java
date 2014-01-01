@@ -3,6 +3,7 @@ package gpainter;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -51,6 +52,8 @@ public class ImagePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        //g.setColor(Color.BLACK);
+        //g.fillRect(0, 0, WIDTH, HEIGHT);
         g.drawImage(img, 0, 0, null);
     }
 

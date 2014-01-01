@@ -79,6 +79,12 @@ public class Individual implements Comparable<Individual> {
         return this.fitness - other.fitness;
     }
 
+    public void updateImage() {
+        Graphics2D g = img.createGraphics();
+        this.paint(g);
+        g.dispose();
+    }
+
     /**
      * Paints the Image this Individual represents.
      *
