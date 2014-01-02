@@ -17,11 +17,11 @@ public class Population {
 
     public static final int POP_SIZE = 100;
     // percent of Population to retain between generations
-    public static final double RETAIN = 0.2;
+    public static final double RETAIN = 0.20;
     // maximum amount to mutate by (between 10 and 100 would be good)
     public static final int MUTATE_AMOUNT = 10;
     // how often to mutate genes
-    public static final double MUTATION_RATE = 0.3;
+    public static final double MUTATION_RATE = 0.1;
 
     public Individual[] generation;
     public Random rand;
@@ -124,6 +124,12 @@ public class Population {
                             int b = orig.getBlue();
 
                             // randomly choose one color component to change
+                            //r += amnt;
+                            //g += amnt;
+                            //b += amnt;
+                            //if (r < 0 || r > 255) r -= amnt;
+                            //if (g < 0 || g > 255) g -= amnt;
+                            //if (b < 0 || b > 255) b -= amnt;
                             Color c;
                             int t;
                             switch (rand.nextInt(3)) {
@@ -180,14 +186,16 @@ public class Population {
                     default: break;
                 }
             }
-            //}
-            }
+        //}
+        }
 
-            // apply our changes
-            kids[0].updateImage();
-            kids[1].updateImage();
+        // apply our changes
+        kids[0].updateImage();
+        kids[1].updateImage();
 
-            return kids;
+        return kids;
+        
+        
     }
 
     /**

@@ -37,7 +37,7 @@ public class Main extends JFrame {
         bestView.setMinimumSize(panelSize);
         bestView.setPreferredSize(panelSize);
 
-        targetView = new ImagePanel("images/star.png");
+        targetView = new ImagePanel("images/shapes.png");
         targetView.setMinimumSize(panelSize);
         targetView.setPreferredSize(panelSize);
 
@@ -67,6 +67,10 @@ public class Main extends JFrame {
         setVisible(true);
     }
     
+    /**
+     * Kickoff the Genetic Algorithm by setting up a Population and evolving
+     * it until the desired fitness is reached.
+     */
     private void initGPainter() {
         Population pop = new Population();
 

@@ -33,10 +33,7 @@ public class Individual implements Comparable<Individual> {
         img = new BufferedImage(ImagePanel.WIDTH,
                                 ImagePanel.HEIGHT,
                                 BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = img.createGraphics();
-        this.paint(g);
-        g.dispose();
-
+        updateImage();
     }
 
     /**
@@ -79,23 +76,14 @@ public class Individual implements Comparable<Individual> {
         return this.fitness - other.fitness;
     }
 
+    /**
+     * Paint the genes onto this Individual's image.
+     */
     public void updateImage() {
         Graphics2D g = img.createGraphics();
-        this.paint(g);
-        g.dispose();
-    }
-
-    /**
-     * Paints the Image this Individual represents.
-     *
-     * @param g     the Graphics object to paint with
-     */
-    public void paint(Graphics g) {
-        //System.out.println("Size: " + genes.length);
-        for(Circle gene : genes) {
-            //System.out.println("Drawing: " + gene.size + " at (" + gene.x + "," + gene.y + ")");
+        for (Circle gene : genes) {
             gene.paint(g);
         }
+        g.dispose();
     }
-
 }
