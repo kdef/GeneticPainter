@@ -9,19 +9,18 @@ import java.util.Random;
  * Population can be evolved to create a new generation based on its
  * fittest Individuals.
  *
- * Note: This class assumes that Individual.GENE_LENGTH is an even number 
- *
  * @author Kyle DeFrancia
  */
 public class Population {
 
+    // number of individuals in a Population
     public static final int POP_SIZE = 100;
     // percent of Population to retain between generations
-    public static final double RETAIN = 0.20;
+    public static final double RETAIN = 0.2;
     // maximum amount to mutate by (between 10 and 100 would be good)
     public static final int MUTATE_AMOUNT = 10;
     // how often to mutate genes
-    public static final double MUTATION_RATE = 0.1;
+    public static final double MUTATION_RATE = 0.3;
 
     public Individual[] generation;
     public Random rand;
@@ -38,21 +37,19 @@ public class Population {
         }
     }
 
-    private Float clamp(Float val) {
-        if (val < 0) {
-            return new Float(0.00001);
-        } 
-        else if (val > 1) {
-            return new Float(0.99999);
-        }
-        return val;
-    }
-
+    /**
+     * Helper function to make sure a given set of coordinates is within
+     * image bounds.
+     *
+     * @param x the x coordinate of the point to check
+     * @param y the y coordinate of the point to check
+     *
+     * @return true if the coordinates are inside the image
+     */
     private boolean checkBounds(int x, int y) {
         return (x < ImagePanel.WIDTH) && (x > 0) &&
                (y < ImagePanel.HEIGHT) && (y > 0);
     }
-
 
     /**
      * Mate two Individuals to produce two new Individuals.  The children
@@ -67,69 +64,44 @@ public class Population {
     private Individual[] mate(Individual mom, Individual dad) {
         Individual[] kids = new Individual[] {new Individual(rand), new Individual(rand)};
 
-        // single point crossover
-        //int splitPoint = Individual.GENE_LENGTH / 2;
-
-        //System.arraycopy(mom.genes, 0, kids[0].genes, 0, splitPoint);
-        //System.arraycopy(dad.genes, splitPoint, kids[0].genes, splitPoint, splitPoint);
-
-        //System.arraycopy(dad.genes, 0, kids[1].genes, 0, splitPoint);
-        //System.arraycopy(mom.genes, splitPoint, kids[1].genes, splitPoint, splitPoint);
-
-        // uniform crossover
-        for (int i = 0; i < Individual.GENE_LENGTH; i++) { 
-            if (0.5 > rand.nextDouble()) {
-                kids[0].genes[i] = mom.genes[i];
-                kids[1].genes[i] = dad.genes[i];
-            } else {
-                kids[0].genes[i] = dad.genes[i];
-                kids[1].genes[i] = mom.genes[i];
+        for (Individual kid : kids) {
+            // uniform crossover
+            for (int i = 0; i < Individual.GENE_LENGTH; i++) {
+                if (rand.nextDouble() < 0.5) {
+                    kid.genes[i] = mom.genes[i];
+                } else {
+                    kid.genes[i] = dad.genes[i];
+                }
             }
-        }
 
-        // randomly mutate some genes
-        for (Individual childToMutate : kids) {
-        //for (int i = 0; i < Individual.GENE_LENGTH; i++) { 
-            if (MUTATION_RATE > rand.nextDouble()) {
-                //System.out.println("Mutation: ");
+            // randomly mutate
+            if (rand.nextDouble() < MUTATION_RATE) {
                 int randomGene = rand.nextInt(Individual.GENE_LENGTH);
-                //int randomGene = i;
                 // randomly choose either size, color, or position to change
                 switch (rand.nextInt(3)) {
-                    case 0: int randomAmnt = rand.nextInt(MUTATE_AMOUNT);
-                            // sometimes decrease
-                            if (rand.nextDouble() < 0.5) {
-                                randomAmnt = -1 * randomAmnt;
-                                int newSize = childToMutate.genes[randomGene].size + randomAmnt;
-                                if (newSize <= 0) randomAmnt = 0;
-                            }
-                            childToMutate.genes[randomGene].size += randomAmnt; 
+                    case 0: int delta = rand.nextInt(MUTATE_AMOUNT);
+                            if (rand.nextDouble() < 0.5) delta *= -1;
+                            int newSize = kid.genes[randomGene].size + delta; 
 
-                            // keep size in check
-                            if (childToMutate.genes[randomGene].size > 30) {
-                                childToMutate.genes[randomGene].size -= 20;
+                            // prevent Circles that are too big or too small
+                            if (newSize > 30) {
+                                newSize -= 20;
+                            } else if (newSize <= 0) {
+                                newSize = 1;
                             }
-
-                            //System.out.println("    size changed: " + childToMutate.genes[randomGene].size);
+                            
+                            kid.genes[randomGene].size = newSize;
                             break;
-                    case 1: int amnt = rand.nextInt(MUTATE_AMOUNT);
-                            // sometimes decrease
-                            if (rand.nextDouble() < 0.5) {
-                                amnt = -1 * amnt;
-                            }
 
-                            Color orig = childToMutate.genes[randomGene].color;
+                    case 1: int amnt = rand.nextInt(MUTATE_AMOUNT);
+                            if (rand.nextDouble() < 0.5) amnt *= -1;
+
+                            Color orig = kid.genes[randomGene].color;
                             int r = orig.getRed();
                             int g = orig.getGreen();
                             int b = orig.getBlue();
 
                             // randomly choose one color component to change
-                            //r += amnt;
-                            //g += amnt;
-                            //b += amnt;
-                            //if (r < 0 || r > 255) r -= amnt;
-                            //if (g < 0 || g > 255) g -= amnt;
-                            //if (b < 0 || b > 255) b -= amnt;
                             Color c;
                             int t;
                             switch (rand.nextInt(3)) {
@@ -148,27 +120,28 @@ public class Population {
                                 default: c = new Color(r, g, b);
                                          break;
                             }
-                            childToMutate.genes[randomGene].color = c;
-                            //System.out.println("    color changed: " + r + " " + g + " " + b);
+                            kid.genes[randomGene].color = c;
                             break;
+
                     case 2: int x;
                             int y;
                             int tries = 0;
                             do {
-                                int randomX = rand.nextInt(MUTATE_AMOUNT);
-                                int randomY = rand.nextInt(MUTATE_AMOUNT);
+                                int deltaX = rand.nextInt(MUTATE_AMOUNT);
+                                int deltaY = rand.nextInt(MUTATE_AMOUNT);
+                                // randomly negate 0, 1, or 2 values
                                 switch (rand.nextInt(4)) {
-                                    case 0: randomY = -1 * randomY;
-                                    case 1: randomX = -1 * randomX;
+                                    case 0: deltaY *= -1;
+                                    case 1: deltaX *= -1;
                                             break;
-                                    case 2: randomY = -1 * randomY;
+                                    case 2: deltaY *= -1;
                                             break;
                                     case 3:
                                     default: break;
                                 }
                                 
-                                x = childToMutate.genes[randomGene].x += randomX;
-                                y = childToMutate.genes[randomGene].y += randomY;
+                                x = kid.genes[randomGene].x + deltaX;
+                                y = kid.genes[randomGene].y + deltaY;
                                 tries++;
                             } while(!checkBounds(x, y) && (tries < 5));
 
@@ -177,25 +150,16 @@ public class Population {
                                 y = rand.nextInt(ImagePanel.HEIGHT);
                             }
                         
-                            //if (0.5 < rand.nextDouble()) {
-                                childToMutate.genes[randomGene].x = x;
-                            //} else {
-                                childToMutate.genes[randomGene].y = y;
-                            //}
-                            //System.out.println("    position changed: (" + x + ", " + y + ")");
+                            kid.genes[randomGene].x = x;
+                            kid.genes[randomGene].y = y;
                     default: break;
                 }
             }
-        //}
+            // apply our changes
+            kid.updateImage();
         }
 
-        // apply our changes
-        kids[0].updateImage();
-        kids[1].updateImage();
-
         return kids;
-        
-        
     }
 
     /**
@@ -206,18 +170,9 @@ public class Population {
         // select the fittest individuals as the parents
         Arrays.sort(generation);
         int keep = (int)(POP_SIZE * RETAIN);
-        //keep /= 2;
-
-        //for (int k =0; k < POP_SIZE; k++){
-        //    System.out.println("fitness: " + generation[k].fitness);
-        //    if (k == keep) System.out.println("^ parents | kids v");
-        //}
-
-        //generation[keep-1] = new Individual(rand);
-        //generation[keep] = new Individual(rand); 
-
+        
         // fill in the rest of the Population
-        for (int i = keep; i < (POP_SIZE-1); i+=2) {
+        for (int i = keep; i < (POP_SIZE - 1); i+=2) {
             // mate two random parents and add children
             int mom = rand.nextInt(keep);
             int dad;
@@ -228,7 +183,6 @@ public class Population {
             Individual[] children = mate(generation[mom], generation[dad]);
             generation[i] = children[0];
             generation[i+1] = children[1];
-            //System.out.println("making babies at indxes: " + i + " and " + (i+1));
         }
     }
 

@@ -31,7 +31,7 @@ public class Circle {
      */
     public Circle(Random rand) {
         
-        size = 8;       //100 is an arbitrary size limit
+        size = rand.nextInt(10);    //10 is an arbitrary size limit
         x = rand.nextInt(ImagePanel.WIDTH);
         y = rand.nextInt(ImagePanel.HEIGHT);
 

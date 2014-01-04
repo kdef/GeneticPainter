@@ -3,7 +3,6 @@ package gpainter;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Color;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
@@ -30,7 +29,9 @@ public class ImagePanel extends JPanel {
     }
 
     /**
-      * Create a new JPanel with a BufferedImage loaaded from a file.
+      * Create a new JPanel with a BufferedImage loaded from a file.
+      *
+      * @param path file path to the image
       */
     public ImagePanel(String path) {
         BufferedImage in = null;
@@ -44,7 +45,8 @@ public class ImagePanel extends JPanel {
         // scale the image to our default size
         img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = img.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                           RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g.drawImage(in, 0, 0, WIDTH, HEIGHT, null);
         g.dispose();
     }
@@ -52,8 +54,6 @@ public class ImagePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        //g.setColor(Color.BLACK);
-        //g.fillRect(0, 0, WIDTH, HEIGHT);
         g.drawImage(img, 0, 0, null);
     }
 

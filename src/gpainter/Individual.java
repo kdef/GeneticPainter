@@ -1,7 +1,6 @@
 package gpainter;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -16,6 +15,7 @@ import java.util.Random;
 public class Individual implements Comparable<Individual> {
 
     public static final int GENE_LENGTH = 150;
+
     public BufferedImage img;
     public Circle[] genes;
     public int fitness;
@@ -46,7 +46,7 @@ public class Individual implements Comparable<Individual> {
      * @return an int representing the fitness of this Individual
      */
     public int judgeFitness(BufferedImage target) {
-        int fitness = 0;
+        int fit = 0;
 
         // compare images pixel by pixel
         for (int i = 0; i < ImagePanel.WIDTH; i++) {
@@ -62,18 +62,12 @@ public class Individual implements Comparable<Individual> {
                                                   deltaG * deltaG +
                                                   deltaB * deltaB);
                 // lower fitness is better
-                fitness += pixelFitness;
+                fit += pixelFitness;
             }
         }
 
-        //System.out.println("    fit = " + fitness);
-        this.fitness = fitness;
-        return fitness;
-    }
-
-    @Override
-    public int compareTo(Individual other) {
-        return this.fitness - other.fitness;
+        fitness = fit;
+        return fit;
     }
 
     /**
@@ -85,5 +79,10 @@ public class Individual implements Comparable<Individual> {
             gene.paint(g);
         }
         g.dispose();
+    }
+
+    @Override
+    public int compareTo(Individual other) {
+        return this.fitness - other.fitness;
     }
 }
