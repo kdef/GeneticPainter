@@ -1,15 +1,19 @@
 package gpainter;
 
-import java.awt.Graphics2D;
-import java.util.Random;
+import org.junit.Test;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
+
+import static org.junit.Assert.*;
 
 public class Tester {
 
-    private BufferedImage testImg;
+    private final BufferedImage testImg;
     private BufferedImage targetImg;
 
-    private Random rand;
+    private final Random rand;
 
     public Tester() {
         System.out.println("Tester intialized");
@@ -19,19 +23,11 @@ public class Tester {
         rand = new Random(25);
     }
 
-    public void testAll() {
-        testIndividual();
-        testPopulation();
-    }
-
     ///////////////////////////////////////////////////////////////////////////
     // INDIVIDUAL TESTS
     ///////////////////////////////////////////////////////////////////////////
 
-    public void testIndividual() {
-        testFitness100();
-    }
-
+    @Test
     public void testFitness100() {
         Individual tst = new Individual(rand);
         ImagePanel target = new ImagePanel("images/star.png");
@@ -43,35 +39,26 @@ public class Tester {
 
         tst.img = testImg;
         int fitness = tst.judgeFitness(target.img);
-        assert (fitness == 0) : "fitness is " + fitness + " but should be 0";
+        assertEquals(0, fitness);
 
         // change one pixel to black so it isn't perfect
         testImg.setRGB(0, 0, 0);
         fitness = tst.judgeFitness(target.img);
-        assert (fitness != 0) : "fitness is 0 when the images do not match";
-
-        System.out.println("    testFitness100 success!");
+        assertNotEquals("0 fitness when images do not match", 0, fitness);
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // POPULATION TESTS
     ///////////////////////////////////////////////////////////////////////////
 
-    public void testPopulation() {
-        testPopulationInit();
-        testPopulationMate();
-        testPopulationEvolve();
-    }
-
+    @Test
     public void testPopulationInit() {
         Population pop = new Population();
 
-        assert (pop.generation.length == Population.POP_SIZE) : "Population wrong size";
+        assertEquals("Population wrong size", Population.POP_SIZE, pop.generation.length);
         for (int i = 0; i < pop.generation.length; i++) {
-            assert (pop.generation[i] != null) : "Population not full";
+            assertNotNull("Population not full", pop.generation[i]);
         }
-
-        System.out.println("    testPopulationInit success!");
     }
 
     public void testPopulationMate() {
